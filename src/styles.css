@@ -1,0 +1,26 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+}
+
+:root,
+.bit-root,
+.bit-auto {
+  --bit-color-bg: hsl(74 32% 90%);
+  --bit-color-fg: hsl(74 32% 10% / 75%);
+  --bit-color-shadow: hsl(74 32% 10% / 38%);
+  --bit-color-accent: hsl(74 32% 10% / 95%);
+}
+
+:root {
+  --screen-color-bg0: oklch(96% 10% 120);
+  --screen-color-bg1: oklch(98% 10% 80);
+}
