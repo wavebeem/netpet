@@ -21,14 +21,25 @@ export class NpAppElement extends BaseElement {
       <np-menu></np-menu>
     `;
     this.shadowRoot.addEventListener("click", this);
+    this.shadowRoot.addEventListener("np-menu-option-change", this);
   }
 
   onDisconnect() {
     this.shadowRoot.removeEventListener("click", this);
+    this.shadowRoot.removeEventListener("np-menu-option-change", this);
   }
 
   handleEvent(event) {
-    const { action } = event.target.dataset;
+    if (event.type === "click") {
+      const { action } = event.target.dataset;
+      this.#handleClick(action);
+    } else if (event.type === "np-menu-option-change") {
+      const { name, value } = event.detail;
+      this.#handleOptionChange({ name, value });
+    }
+  }
+
+  #handleClick(action) {
     if (action === "play") {
       this.#pet.offset--;
     } else if (action === "sound") {
@@ -36,6 +47,10 @@ export class NpAppElement extends BaseElement {
     } else if (action === "menu") {
       this.#settings.show();
     }
+  }
+
+  #handleOptionChange({ name, value }) {
+    console.log("Got option change:", name, value);
   }
 
   get #pet() {

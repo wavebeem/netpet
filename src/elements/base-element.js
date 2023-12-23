@@ -25,6 +25,14 @@ export class BaseElement extends HTMLElement {
 
   onDisconnect() {}
 
+  createCustomEvent(name, detail) {
+    return new CustomEvent(name, {
+      bubbles: true,
+      composed: true,
+      detail,
+    });
+  }
+
   #defineProperties() {
     if (!this.constructor.propTypes) {
       return;
