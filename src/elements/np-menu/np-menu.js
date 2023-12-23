@@ -2,7 +2,6 @@ import { BaseElement, html } from "../base-element.js";
 
 export class NpMenuElement extends BaseElement {
   onConnect() {
-    const year = new Date().getFullYear();
     this.shadowRoot.innerHTML = html`
       <link
         rel="stylesheet"
@@ -28,16 +27,8 @@ export class NpMenuElement extends BaseElement {
               <option value="green">green</option>
             </select>
           </label>
-          <label class="flex-column">
-            <span>volume</span>
-            <select class="bit-select" name="volume">
-              <option value="low">low</option>
-              <option value="medium">white</option>
-              <option value="high">high</option>
-            </select>
-          </label>
           <p>
-            whisper, fantasma fonts &copy;
+            whisper, fantasma fonts<br />&copy;
             <a
               class="bit-link"
               target="_blank"
@@ -46,7 +37,13 @@ export class NpMenuElement extends BaseElement {
             >
           </p>
           <p>
-            code &amp; images &copy;
+            background textures<br />&copy;
+            <a class="bit-link" target="_blank" href="https://css-pattern.com/"
+              >temani afif</a
+            >
+          </p>
+          <p>
+            code &amp; images<br />&copy;
             <a class="bit-link" target="_blank" href="https://www.wavebeem.com"
               >sage fennel</a
             >

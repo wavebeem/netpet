@@ -68,3 +68,39 @@ export function attrToProp(attr) {
     .replace(/^data-/, "")
     .replace(/-([a-z])/g, (_, s) => s.toUpperCase());
 }
+
+export async function playSound(audio, volume) {
+  return new Promise(async (resolve, reject) => {
+    const abortController = new AbortController();
+    try {
+      if (volume === 0) {
+        return;
+      }
+      audio.currentTime = 0;
+      const { signal } = abortController;
+      audio.addEventListener(
+        "ended",
+        () => {
+          resolve();
+        },
+        { signal }
+      );
+      audio.addEventListener(
+        "error",
+        () => {
+          reject(new Error("Failed to play sound"));
+        },
+        { signal }
+      );
+      if (audio) {
+        audio.volume = volume;
+        await audio.play();
+      }
+    } catch (err) {
+      reject(err);
+    } finally {
+      resolve();
+      abortController.abort();
+    }
+  });
+}

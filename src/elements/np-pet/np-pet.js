@@ -9,11 +9,13 @@ import {
 } from "../../util.js";
 
 export class NpPetElement extends BaseElement {
+  #happiness = 3;
+  #volume = 0;
   #state = "loading";
-  #offset = 0;
   #screenWidth = 32;
   #screenHeight = 16;
   #petSize = 16;
+  #offset = this.#screenWidth / 2 - this.#petSize / 2;
   #imageDatas = new Map();
   #pixelDatas = new Map();
   #favicon;
@@ -39,25 +41,33 @@ export class NpPetElement extends BaseElement {
     this.render();
   }
 
-  get offset() {
-    return this.#offset;
+  get happiness() {
+    return this.#happiness;
   }
 
-  set offset(value) {
-    this.#offset = value;
+  set happiness(value) {
+    this.#happiness = value;
+    this.render();
+  }
+
+  get volume() {
+    return this.#volume;
+  }
+
+  set volume(value) {
+    this.#volume = value;
     this.render();
   }
 
   onConnect() {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-pet.css")}" />
-      <div
-        class="pixel-grid"
-        style="
-          --screen-width: ${this.#screenWidth};
-          --screen-height: ${this.#screenHeight};
-        "
-      >
+      <div class="happiness">
+        ${range(5)
+          .map(() => html`<div data-color="0">&hearts;</div>`)
+          .join("")}
+      </div>
+      <div class="pixel-grid">
         ${range(this.#screenHeight)
           .map((y) => {
             return range(this.#screenWidth)
@@ -73,8 +83,15 @@ export class NpPetElement extends BaseElement {
           })
           .join("")}
       </div>
+      <div class="volume">
+        ${range(3)
+          .map(() => html`<div data-color="0">&sung;</div>`)
+          .join("")}
+      </div>
     `;
-
+    const grid = this.#pixelGrid;
+    grid.style.setProperty("--screen-width", String(this.#screenWidth));
+    grid.style.setProperty("--screen-height", String(this.#screenHeight));
     this.#load();
   }
 
@@ -83,6 +100,8 @@ export class NpPetElement extends BaseElement {
       return;
     }
     this.#updatePixels();
+    this.#updateHappiness();
+    this.#updateVolume();
     this.#updateFavicon();
   }
 
@@ -128,12 +147,26 @@ export class NpPetElement extends BaseElement {
     const ctx = this.#screenCtx;
     const imageData = this.#getImageData(this.state);
     ctx.clearRect(0, 0, this.#screenWidth, this.#screenHeight);
-    ctx.putImageData(imageData, this.offset, 0);
+    ctx.putImageData(imageData, this.#offset, 0);
     const pixelData = convertImageDataToPixelData(
       ctx.getImageData(0, 0, this.#screenWidth, this.#screenHeight)
     );
     for (const [element, color] of zip(this.#pixelElements(), pixelData)) {
       element.dataset.color = color;
+    }
+  }
+
+  #updateHappiness() {
+    const hearts = this.shadowRoot.querySelectorAll(".happiness > *");
+    for (const [i, heart] of hearts.entries()) {
+      heart.dataset.color = i < this.#happiness ? "1" : "0";
+    }
+  }
+
+  #updateVolume() {
+    const notes = this.shadowRoot.querySelectorAll(".volume > *");
+    for (const [i, note] of notes.entries()) {
+      note.dataset.color = i < this.#volume ? "1" : "0";
     }
   }
 
@@ -171,6 +204,10 @@ export class NpPetElement extends BaseElement {
     }
     ctx.putImageData(imageData, 0, 0);
     favicon.href = canvas.toDataURL();
+  }
+
+  get #pixelGrid() {
+    return this.shadowRoot.querySelector(".pixel-grid");
   }
 }
 
