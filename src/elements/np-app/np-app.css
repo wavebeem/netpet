@@ -11,7 +11,6 @@
   --button-color-bg1: hsl(50 70% 50%);
   --button-color-shine: hsl(50 100% 80%);
   --button-color-border: hsl(260 70% 45%);
-  --font-cool: "Whisper", sans-serif;
 }
 
 * {
@@ -26,7 +25,7 @@
   line-height: 1;
   margin: 0;
   margin-bottom: 1rem;
-  font-family: var(--font-cool);
+  font-family: var(--font-cool0);
   text-align: center;
 }
 
@@ -79,7 +78,6 @@
   margin: 0;
   margin-top: 16px;
   line-height: 1;
-  font-family: var(--font-cool);
   display: grid;
   grid-template-columns: repeat(var(--controls-columns), minmax(100px, 1fr));
   flex-wrap: wrap;
@@ -100,9 +98,7 @@
   --base-shadow: 0 0 0 1px var(--button-color-border),
     0 0 1px 4px var(--frame-color-bg1), 0 0 4px 4px hsl(0 0% 100% / 10%);
   font-size: inherit;
-  font-family: ui-rounded, "Hiragino Maru Gothic ProN", Quicksand, Comfortaa,
-    Manjari, "Arial Rounded MT", "Arial Rounded MT Bold", Calibri,
-    source-sans-pro, sans-serif;
+  font-family: inherit;
   line-height: 1;
   padding: 12px 16px 16px 16px;
   border: 0;

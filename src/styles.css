@@ -1,15 +1,21 @@
+:root {
+  --font-cool0: "Whisper", sans-serif;
+  --font-cool1: "Fantasma", sans-serif;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
-  line-height: 1.5;
 }
 
 body {
   overflow: hidden;
   height: 100svh;
   display: grid;
+  font-family: var(--font-cool1);
+  line-height: 1.5;
+  font-size: 24px;
 }
 
 :root,

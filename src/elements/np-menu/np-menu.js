@@ -37,12 +37,19 @@ export class NpMenuElement extends BaseElement {
             </select>
           </label>
           <p>
-            whisper font &copy; ${year}
-            <a class="bit-link" href="https://www.froyotam.info/">froyo tam</a>
+            whisper, fantasma fonts &copy;
+            <a
+              class="bit-link"
+              target="_blank"
+              href="https://www.froyotam.info/"
+              >froyo tam</a
+            >
           </p>
           <p>
-            code &amp; images &copy; ${year}
-            <a class="bit-link" href="https://www.wavebeem.com">sage fennel</a>
+            code &amp; images &copy;
+            <a class="bit-link" target="_blank" href="https://www.wavebeem.com"
+              >sage fennel</a
+            >
           </p>
           <div class="flex-right">
             <button class="bit-button">close</button>
