@@ -3,8 +3,8 @@
   --frame-color-bg0: hsl(260 70% 55%);
   --frame-color-bg1: hsl(260 70% 50%);
   --frame-color-fg: hsl(0 0% 100%);
-  --screen-color-bg0: oklch(96% 10% 120);
-  --screen-color-bg1: oklch(98% 10% 80);
+  --screen-color-bg0: hsl(200 100% 95%);
+  --screen-color-bg1: hsl(0 100% 97%);
   --screen-stripe-size: 32px;
   --button-color-fg: hsl(50 90% 20%);
   --button-color-bg0: hsl(50 100% 60%);
@@ -48,32 +48,21 @@
     inset 0 4px 8px hsl(0 0% 0% / 20%);
   color: var(--bit-color-fg);
   background: var(--bit-color-bg);
-  background-clip: padding-box;
-  background-color: var(--screen-color-bg0);
-  background-image: linear-gradient(
-      135deg,
-      var(--screen-color-bg1) calc(25% - 0.5px),
-      transparent 25%
-    ),
-    linear-gradient(
-      225deg,
-      var(--screen-color-bg1) calc(25% - 0.5px),
-      transparent 25%
-    ),
-    linear-gradient(
-      45deg,
-      var(--screen-color-bg1) calc(25% - 0.5px),
-      transparent 25%
-    ),
-    linear-gradient(
-      315deg,
-      var(--screen-color-bg1) calc(25% - 0.5px),
-      var(--screen-color-bg0) calc(25%)
-    );
-  background-position: var(--screen-stripe-size) 0, var(--screen-stripe-size) 0,
-    0 0, 0 0;
-  background-size: var(--screen-stripe-size) var(--screen-stripe-size);
-  background-repeat: repeat;
+
+  /* https://css-pattern.com/ */
+  --s: 100px; /* control the size */
+  --c1: var(--screen-color-bg0);
+  --c2: var(--screen-color-bg1);
+  --l: var(--c1) 99%, #0000 101%;
+  --p: var(--c2) 99%, #0000 101%;
+  --r: closest-corner at;
+  background: radial-gradient(var(--r)-25% 25%, var(--p)),
+    radial-gradient(var(--r) 25% -25%, var(--p)),
+    radial-gradient(var(--r) 125% 75%, var(--p)),
+    radial-gradient(var(--r) 75% 125%, var(--p)),
+    radial-gradient(var(--r) 75% 75%, var(--l)),
+    radial-gradient(var(--r) 25% 25%, var(--l)) var(--c2);
+  background-size: var(--s) var(--s);
 }
 
 .controls {
