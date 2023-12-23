@@ -3,10 +3,6 @@ export class BaseElement extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
   }
-
-  get cssURL() {
-    return new URL(`${this.localName}.css`, import.meta.url).href;
-  }
 }
 
 export const html = String.raw;

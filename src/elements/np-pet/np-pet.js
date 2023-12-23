@@ -1,10 +1,10 @@
-import { BaseElement, html } from "./base-element.js";
-import { range, zip, loadImageAsPixelData } from "../util.js";
+import { BaseElement, html } from "../base-element.js";
+import { range, zip, loadImageAsPixelData } from "../../util.js";
 
 const screenWidth = 16;
 const screenHeight = 16;
 
-class NpAppElement extends BaseElement {
+export class NpPetElement extends BaseElement {
   #pixelColors = new Map();
   #state = "loading";
   #favicon;
@@ -17,7 +17,7 @@ class NpAppElement extends BaseElement {
 
   connectedCallback() {
     this.shadowRoot.innerHTML = html`
-      <link rel="stylesheet" href="${this.cssURL}" />
+      <link rel="stylesheet" href="${import.meta.resolve("./np-pet.css")}" />
       <div
         class="pixel-grid"
         style="
@@ -37,7 +37,8 @@ class NpAppElement extends BaseElement {
   }
 
   #urlForState(state) {
-    return new URL(`${this.localName}--${state}.png`, import.meta.url).href;
+    return import.meta.resolve(`./img/${state}.png`);
+    // return new URL(`img/${state}.png`, import.meta.url).href;
   }
 
   async #load() {
@@ -86,13 +87,14 @@ class NpAppElement extends BaseElement {
     favicon.sizes = "16x16";
     favicon.id = "np-pet-favicon";
     document.head.append(favicon);
+    return favicon;
   }
 
   #updateFavicon(pixelColors) {
     const favicon = this.#getOrCreateFavicon();
     const canvas = document.createElement("canvas");
-    canvas.width = 16;
-    canvas.height = 16;
+    canvas.width = screenWidth;
+    canvas.height = screenHeight;
     const ctx = canvas.getContext("2d");
     const imageData = ctx.createImageData(canvas.width, canvas.height);
     for (let i = 0; i < pixelColors.length; i++) {
@@ -109,4 +111,4 @@ class NpAppElement extends BaseElement {
   }
 }
 
-customElements.define("np-pet", NpAppElement);
+customElements.define("np-pet", NpPetElement);
