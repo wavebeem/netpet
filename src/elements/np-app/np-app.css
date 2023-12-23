@@ -6,6 +6,10 @@
   --screen-color-bg0: oklch(96% 10% 120);
   --screen-color-bg1: oklch(98% 10% 80);
   --screen-stripe-size: 32px;
+  --button-color-fg: hsl(50 90% 20%);
+  --button-color-bg0: hsl(50 100% 60%);
+  --button-color-bg1: hsl(50 70% 50%);
+  --button-color-border: hsl(260 70% 45%);
   --font-cool: "Whisper", sans-serif;
 }
 
@@ -15,12 +19,6 @@
   margin-bottom: 1rem;
   font-family: var(--font-cool);
   text-align: center;
-}
-
-.controls {
-  margin-top: 8px;
-  line-height: 1;
-  font-family: var(--font-cool);
 }
 
 .frame {
@@ -76,4 +74,42 @@
     0 0, 0 0;
   background-size: var(--screen-stripe-size) var(--screen-stripe-size);
   background-repeat: repeat;
+}
+
+.controls {
+  margin-top: 16px;
+  line-height: 1;
+  font-family: var(--font-cool);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.button {
+  --base-shadow: 0 0 0 1px var(--button-color-border),
+    0 0 1px 4px var(--frame-color-bg1);
+  font-size: inherit;
+  font-family: ui-rounded, "Hiragino Maru Gothic ProN", Quicksand, Comfortaa,
+    Manjari, "Arial Rounded MT", "Arial Rounded MT Bold", Calibri,
+    source-sans-pro, sans-serif;
+  padding: 4px 16px 8px 16px;
+  border: 0;
+  background-clip: padding-box;
+  color: var(--button-color-fg);
+  background: var(--button-color-bg0);
+  box-shadow: inset 0 -4px 0 0 var(--button-color-bg1), var(--base-shadow);
+  border-radius: 8px;
+}
+
+.button:where(:active) {
+  background: var(--button-color-bg1);
+  box-shadow: var(--base-shadow);
+  translate: 0 1px;
+  scale: 98%;
+}
+
+.button:where(:focus-visible) {
+  outline: 2px solid var(--button-color-bg0);
+  outline-offset: 2px;
 }

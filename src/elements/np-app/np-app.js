@@ -13,7 +13,7 @@ export class NpAppElement extends BaseElement {
         <div class="controls">
           <button class="button" data-action="feed">feed</button>
           <button class="button" data-action="clean">clean</button>
-          <button class="button" data-action="options">options</button>
+          <button class="button" data-action="menu">menu</button>
         </div>
       </div>
     `;
@@ -30,8 +30,8 @@ export class NpAppElement extends BaseElement {
       this.#pet.offset--;
     } else if (action === "clean") {
       this.#pet.offset++;
-    } else if (action === "options") {
-      this.#pet.offset = 0;
+    } else if (action === "menu") {
+      this.#pet.offset = 32 / 2 - 16 / 2;
     }
   }
 
