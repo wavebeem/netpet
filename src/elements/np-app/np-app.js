@@ -1,5 +1,6 @@
 import { BaseElement, html } from "../base-element.js";
 import "../np-pet/np-pet.js";
+import "../np-menu/np-menu.js";
 
 export class NpAppElement extends BaseElement {
   onConnect() {
@@ -11,11 +12,13 @@ export class NpAppElement extends BaseElement {
           <np-pet></np-pet>
         </div>
         <div class="controls">
-          <button class="button" data-action="feed">feed</button>
-          <button class="button" data-action="clean">clean</button>
+          <button class="button" data-action="play">play</button>
+          <button class="button" data-action="sound">sound</button>
+          <button class="button" data-action="sleep">sleep</button>
           <button class="button" data-action="menu">menu</button>
         </div>
       </div>
+      <np-menu></np-menu>
     `;
     this.shadowRoot.addEventListener("click", this);
   }
@@ -26,17 +29,21 @@ export class NpAppElement extends BaseElement {
 
   handleEvent(event) {
     const { action } = event.target.dataset;
-    if (action === "feed") {
+    if (action === "play") {
       this.#pet.offset--;
-    } else if (action === "clean") {
+    } else if (action === "sound") {
       this.#pet.offset++;
     } else if (action === "menu") {
-      this.#pet.offset = 32 / 2 - 16 / 2;
+      this.#settings.show();
     }
   }
 
   get #pet() {
     return this.shadowRoot.querySelector("np-pet");
+  }
+
+  get #settings() {
+    return this.shadowRoot.querySelector("np-menu");
   }
 }
 

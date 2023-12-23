@@ -13,6 +13,14 @@
   --font-cool: "Whisper", sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+:host([hidden]) {
+  display: none;
+}
+
 .heading {
   line-height: 1;
   margin: 0;
@@ -22,6 +30,7 @@
 }
 
 .frame {
+  max-height: 100svh;
   display: flex;
   flex-direction: column;
   background: radial-gradient(
@@ -35,6 +44,7 @@
 }
 
 .screen {
+  overflow-y: auto;
   flex: auto;
   display: flex;
   flex-direction: column;
@@ -87,6 +97,7 @@
   background: var(--button-color-bg0);
   box-shadow: inset 0 -4px 0 0 var(--button-color-bg1), var(--base-shadow);
   border-radius: 8px;
+  border-radius: 9999px;
 }
 
 .button:where(:active) {

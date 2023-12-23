@@ -8,15 +8,13 @@ body {
 
 body {
   overflow: hidden;
-  min-height: 100svh;
+  height: 100svh;
   display: grid;
 }
 
 :root,
 .bit-root,
 .bit-auto {
-  --bit-color-bg: hsl(74 32% 90%);
-  --bit-color-fg: hsl(74 32% 10% / 75%);
-  --bit-color-shadow: hsl(74 32% 10% / 38%);
-  --bit-color-accent: hsl(74 32% 10% / 95%);
+  --bit-color0: hsl(200 100% 15%);
+  --bit-color1: hsl(200 100% 95%);
 }
