@@ -11,41 +11,41 @@ export class NpMenuElement extends BaseElement {
       <link rel="stylesheet" href="${import.meta.resolve("./np-menu.css")}" />
       <dialog class="bit-root">
         <form method="dialog">
-          <h2>Settings</h2>
+          <h2>menu</h2>
           <label class="flex-column">
-            <span>Theme</span>
+            <span>theme</span>
             <select class="bit-select" name="theme">
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
+              <option value="light">light</option>
+              <option value="dark">dark</option>
             </select>
           </label>
           <label class="flex-column">
-            <span>Favicon</span>
+            <span>favicon</span>
             <select class="bit-select" name="favicon">
-              <option value="default">Default</option>
-              <option value="white">White</option>
-              <option value="black">Black</option>
-              <option value="green">Green</option>
+              <option value="default">default</option>
+              <option value="white">white</option>
+              <option value="black">black</option>
+              <option value="green">green</option>
             </select>
           </label>
           <label class="flex-column">
-            <span>Volume</span>
+            <span>volume</span>
             <select class="bit-select" name="volume">
-              <option value="low">Low</option>
-              <option value="medium">White</option>
-              <option value="high">High</option>
+              <option value="low">low</option>
+              <option value="medium">white</option>
+              <option value="high">high</option>
             </select>
           </label>
           <p>
-            Whisper font &copy; ${year}
-            <a class="bit-link" href="https://www.froyotam.info/">Froyo Tam</a>
+            whisper font &copy; ${year}
+            <a class="bit-link" href="https://www.froyotam.info/">froyo tam</a>
           </p>
           <p>
-            Code &amp; images &copy; ${year}
-            <a class="bit-link" href="https://www.wavebeem.com">Sage Fennel</a>
+            code &amp; images &copy; ${year}
+            <a class="bit-link" href="https://www.wavebeem.com">sage fennel</a>
           </p>
           <div class="flex-right">
-            <button class="bit-button">Close</button>
+            <button class="bit-button">close</button>
           </div>
         </form>
       </dialog>
@@ -59,9 +59,7 @@ export class NpMenuElement extends BaseElement {
 
   handleEvent(event) {
     const { name, value } = event.target;
-    this.shadowRoot.dispatchEvent(
-      this.createCustomEvent("np-menu-option-change", { name, value })
-    );
+    this.dispatchCustomEvent("np-menu-option-change", { name, value });
   }
 
   show() {
