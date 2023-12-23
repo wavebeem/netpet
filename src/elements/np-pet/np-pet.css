@@ -2,10 +2,9 @@
   display: block;
   --pixel-size: 16px;
   --pixel-gap: 1px;
-  --pixel-color0: hsl(74 32% 10% / 0%);
-  --pixel-color1: hsl(74 32% 10% / 5%);
-  --pixel-color2: hsl(74 32% 10% / 30%);
-  --pixel-color3: hsl(74 32% 10% / 70%);
+  --pixel-color0: hsl(74 32% 10% / 3%);
+  --pixel-color1: hsl(74 32% 10% / 70%);
+  --pixel-color1-shadow: hsl(74 32% 10% / 20%);
 }
 
 .pixel-grid {
@@ -27,12 +26,6 @@
 
 .pixel[data-pixel-color="1"] {
   background: var(--pixel-color1);
-}
-
-.pixel[data-pixel-color="2"] {
-  background: var(--pixel-color2);
-}
-
-.pixel[data-pixel-color="3"] {
-  background: var(--pixel-color3);
+  box-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
+    calc(var(--pixel-size) / 2) var(--pixel-color1-shadow);
 }

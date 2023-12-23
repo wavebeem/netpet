@@ -10,8 +10,6 @@ export class NpPetElement extends BaseElement {
   #favicon;
   #faviconColors = [
     [128, 128, 128, 0],
-    [128, 128, 128, 32],
-    [128, 128, 128, 128],
     [128, 128, 128, 255],
   ];
 
@@ -38,7 +36,6 @@ export class NpPetElement extends BaseElement {
 
   #urlForState(state) {
     return import.meta.resolve(`./img/${state}.png`);
-    // return new URL(`img/${state}.png`, import.meta.url).href;
   }
 
   async #load() {

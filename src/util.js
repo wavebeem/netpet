@@ -34,16 +34,8 @@ export async function loadImageAsPixelData(url) {
     const red = data[i];
     // const green = data[i + 1];
     // const blue = data[i + 2];
-    const alpha = data[i + 3];
-    if (alpha < 128) {
-      ret.push(0);
-    } else if (red < 85) {
-      ret.push(3);
-    } else if (red < 170) {
-      ret.push(2);
-    } else {
-      ret.push(1);
-    }
+    // const alpha = data[i + 3];
+    ret.push(red < 128 ? 1 : 0);
   }
   return ret;
 }

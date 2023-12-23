@@ -19,8 +19,3 @@ body {
   --bit-color-shadow: hsl(74 32% 10% / 38%);
   --bit-color-accent: hsl(74 32% 10% / 95%);
 }
-
-:root {
-  --screen-color-bg0: oklch(96% 10% 120);
-  --screen-color-bg1: oklch(98% 10% 80);
-}
