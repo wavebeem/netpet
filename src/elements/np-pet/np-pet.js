@@ -1,17 +1,34 @@
 import { BaseElement, html } from "../base-element.js";
-import { range, zip, loadImageAsPixelData } from "../../util.js";
-
-const screenWidth = 16;
-const screenHeight = 16;
+import {
+  range,
+  zip,
+  createCanvasContext,
+  loadUrlAsElement,
+  convertImageToImageData,
+  convertImageDataToPixelData,
+} from "../../util.js";
 
 export class NpPetElement extends BaseElement {
-  #pixelColors = new Map();
+  #screenWidth = 32;
+  #screenHeight = 16;
+  #petSize = 16;
+  #imageDatas = new Map();
+  #pixelDatas = new Map();
   #state = "loading";
   #favicon;
   #faviconColors = [
     [128, 128, 128, 0],
     [128, 128, 128, 255],
   ];
+  #offset = 0;
+  #screenCtx = createCanvasContext({
+    width: this.#screenWidth,
+    height: this.#screenHeight,
+  });
+  #faviconCtx = createCanvasContext({
+    width: this.#petSize,
+    height: this.#petSize,
+  });
 
   connectedCallback() {
     this.shadowRoot.innerHTML = html`
@@ -19,13 +36,22 @@ export class NpPetElement extends BaseElement {
       <div
         class="pixel-grid"
         style="
-          --screen-width: ${screenWidth};
-          --screen-height: ${screenHeight};
+          --screen-width: ${this.#screenWidth};
+          --screen-height: ${this.#screenHeight};
         "
       >
-        ${range(screenWidth * screenHeight)
-          .map(() => {
-            return html`<div class="pixel" data-pixel-color="0"></div>`;
+        ${range(this.#screenHeight)
+          .map((y) => {
+            return range(this.#screenWidth)
+              .map((x) => {
+                return html`<div
+                  class="pixel"
+                  data-color="0"
+                  data-x="${x}"
+                  data-y="${y}"
+                ></div>`;
+              })
+              .join("");
           })
           .join("")}
       </div>
@@ -39,36 +65,55 @@ export class NpPetElement extends BaseElement {
   }
 
   async #load() {
-    this.#pixelColors.set(
-      "idle",
-      await loadImageAsPixelData(this.#urlForState("idle"))
-    );
     if (this.#state !== "loading") {
       return;
     }
-    this.#setState("#idle");
+    await this.#loadState("idle");
+    this.#setState("idle");
   }
 
-  #setState() {
-    const pixelColors = this.#getPixelColors("idle");
-    this.#updatePixels(pixelColors);
-    this.#updateFavicon(pixelColors);
+  async #loadState(state) {
+    const image = await loadUrlAsElement(this.#urlForState(state));
+    const imageData = convertImageToImageData(image);
+    const pixelData = convertImageDataToPixelData(imageData);
+    this.#pixelDatas.set(state, pixelData);
+    this.#imageDatas.set(state, imageData);
   }
 
-  #getPixelColors(state) {
-    if (!this.#pixelColors.has(state)) {
+  #setState(state) {
+    this.#state = state;
+    this.#updatePixels();
+    this.#updateFavicon();
+  }
+
+  #getPixelData(state) {
+    if (!this.#pixelDatas.has(state)) {
       throw new Error(`Unknown state: ${state}`);
     }
-    return this.#pixelColors.get(state);
+    return this.#pixelDatas.get(state);
+  }
+
+  #getImageData(state) {
+    if (!this.#imageDatas.has(state)) {
+      throw new Error(`Unknown state: ${state}`);
+    }
+    return this.#imageDatas.get(state);
   }
 
   #pixelElements() {
     return [...this.shadowRoot.querySelectorAll(".pixel")];
   }
 
-  #updatePixels(pixelColors) {
-    for (const [element, color] of zip(this.#pixelElements(), pixelColors)) {
-      element.dataset.pixelColor = color;
+  #updatePixels() {
+    const ctx = this.#screenCtx;
+    const imageData = this.#getImageData(this.#state);
+    ctx.clearRect(0, 0, this.#screenWidth, this.#screenHeight);
+    ctx.putImageData(imageData, this.#offset, 0);
+    const pixelData = convertImageDataToPixelData(
+      ctx.getImageData(0, 0, this.#screenWidth, this.#screenHeight)
+    );
+    for (const [element, color] of zip(this.#pixelElements(), pixelData)) {
+      element.dataset.color = color;
     }
   }
 
@@ -87,13 +132,14 @@ export class NpPetElement extends BaseElement {
     return favicon;
   }
 
-  #updateFavicon(pixelColors) {
+  #updateFavicon() {
+    const pixelColors = this.#getPixelData(this.#state);
     const favicon = this.#getOrCreateFavicon();
-    const canvas = document.createElement("canvas");
-    canvas.width = screenWidth;
-    canvas.height = screenHeight;
-    const ctx = canvas.getContext("2d");
-    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const ctx = this.#faviconCtx;
+    const { canvas } = ctx;
+    const { width, height } = canvas;
+    ctx.clearRect(0, 0, width, height);
+    const imageData = ctx.createImageData(width, height);
     for (let i = 0; i < pixelColors.length; i++) {
       const color = pixelColors[i];
       const [r, g, b, a] = this.#faviconColors[color];

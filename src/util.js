@@ -6,7 +6,7 @@ export function zip(a, b) {
   return a.map((x, i) => [x, b[i]]);
 }
 
-async function loadImageAsElement(url) {
+export async function loadUrlAsElement(url) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => {
@@ -22,20 +22,43 @@ async function loadImageAsElement(url) {
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
-export async function loadImageAsPixelData(url) {
-  const image = await loadImageAsElement(url);
+export async function loadUrlAsPixelData(url) {
+  const image = await loadUrlAsElement(url);
+  return convertImageToPixelData(image);
+}
+
+export function convertImageToImageData(image) {
   canvas.width = image.width;
   canvas.height = image.height;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(image, 0, 0);
-  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+export function convertImageToPixelData(image) {
+  return convertImageDataToPixelData(convertImageToImageData(image));
+}
+
+export function convertImageDataToPixelData(imageData) {
+  const { data } = imageData;
   const ret = [];
   for (let i = 0; i < data.length; i += 4) {
     const red = data[i];
     // const green = data[i + 1];
     // const blue = data[i + 2];
-    // const alpha = data[i + 3];
-    ret.push(red < 128 ? 1 : 0);
+    const alpha = data[i + 3];
+    let color = 0;
+    if (alpha === 255 && red < 128) {
+      color = 1;
+    }
+    ret.push(color);
   }
   return ret;
+}
+
+export function createCanvasContext({ width, height }) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  return canvas.getContext("2d");
 }

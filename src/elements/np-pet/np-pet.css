@@ -20,11 +20,11 @@
   background: var(--pixel-color);
 }
 
-.pixel[data-pixel-color="0"] {
+.pixel[data-color="0"] {
   background: var(--pixel-color0);
 }
 
-.pixel[data-pixel-color="1"] {
+.pixel[data-color="1"] {
   background: var(--pixel-color1);
   box-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
     calc(var(--pixel-size) / 2) var(--pixel-color1-shadow);
