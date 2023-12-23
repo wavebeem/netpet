@@ -7,6 +7,13 @@ const screenHeight = 16;
 class NpAppElement extends BaseElement {
   #pixelColors = new Map();
   #state = "loading";
+  #favicon;
+  #faviconColors = [
+    [128, 128, 128, 0],
+    [128, 128, 128, 32],
+    [128, 128, 128, 128],
+    [128, 128, 128, 255],
+  ];
 
   connectedCallback() {
     this.shadowRoot.innerHTML = html`
@@ -45,7 +52,9 @@ class NpAppElement extends BaseElement {
   }
 
   #setState() {
-    this.#updatePixels(this.#getPixelColors("idle"));
+    const pixelColors = this.#getPixelColors("idle");
+    this.#updatePixels(pixelColors);
+    this.#updateFavicon(pixelColors);
   }
 
   #getPixelColors(state) {
@@ -63,6 +72,40 @@ class NpAppElement extends BaseElement {
     for (const [element, color] of zip(this.#pixelElements(), pixelColors)) {
       element.dataset.pixelColor = color;
     }
+  }
+
+  #getOrCreateFavicon() {
+    this.#favicon ||= document.querySelector("#np-pet-favicon");
+    this.#favicon ||= this.#createFavicon();
+    return this.#favicon;
+  }
+
+  #createFavicon() {
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.sizes = "16x16";
+    favicon.id = "np-pet-favicon";
+    document.head.append(favicon);
+  }
+
+  #updateFavicon(pixelColors) {
+    const favicon = this.#getOrCreateFavicon();
+    const canvas = document.createElement("canvas");
+    canvas.width = 16;
+    canvas.height = 16;
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    for (let i = 0; i < pixelColors.length; i++) {
+      const color = pixelColors[i];
+      const [r, g, b, a] = this.#faviconColors[color];
+      const j = i * 4;
+      imageData.data[j + 0] = r;
+      imageData.data[j + 1] = g;
+      imageData.data[j + 2] = b;
+      imageData.data[j + 3] = a;
+    }
+    ctx.putImageData(imageData, 0, 0);
+    favicon.href = canvas.toDataURL();
   }
 }
 
