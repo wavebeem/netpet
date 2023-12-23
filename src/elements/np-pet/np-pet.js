@@ -9,18 +9,18 @@ import {
 } from "../../util.js";
 
 export class NpPetElement extends BaseElement {
+  #state = "loading";
+  #offset = 0;
   #screenWidth = 32;
   #screenHeight = 16;
   #petSize = 16;
   #imageDatas = new Map();
   #pixelDatas = new Map();
-  #state = "loading";
   #favicon;
   #faviconColors = [
     [128, 128, 128, 0],
     [128, 128, 128, 255],
   ];
-  #offset = 0;
   #screenCtx = createCanvasContext({
     width: this.#screenWidth,
     height: this.#screenHeight,
@@ -30,7 +30,25 @@ export class NpPetElement extends BaseElement {
     height: this.#petSize,
   });
 
-  connectedCallback() {
+  get state() {
+    return this.#state;
+  }
+
+  set state(value) {
+    this.#state = value;
+    this.render();
+  }
+
+  get offset() {
+    return this.#offset;
+  }
+
+  set offset(value) {
+    this.#offset = value;
+    this.render();
+  }
+
+  onConnect() {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-pet.css")}" />
       <div
@@ -60,16 +78,24 @@ export class NpPetElement extends BaseElement {
     this.#load();
   }
 
+  render() {
+    if (this.state === "loading") {
+      return;
+    }
+    this.#updatePixels();
+    this.#updateFavicon();
+  }
+
   #urlForState(state) {
     return import.meta.resolve(`./img/${state}.png`);
   }
 
   async #load() {
-    if (this.#state !== "loading") {
+    if (this.state !== "loading") {
       return;
     }
     await this.#loadState("idle");
-    this.#setState("idle");
+    this.state = "idle";
   }
 
   async #loadState(state) {
@@ -78,12 +104,6 @@ export class NpPetElement extends BaseElement {
     const pixelData = convertImageDataToPixelData(imageData);
     this.#pixelDatas.set(state, pixelData);
     this.#imageDatas.set(state, imageData);
-  }
-
-  #setState(state) {
-    this.#state = state;
-    this.#updatePixels();
-    this.#updateFavicon();
   }
 
   #getPixelData(state) {
@@ -106,9 +126,9 @@ export class NpPetElement extends BaseElement {
 
   #updatePixels() {
     const ctx = this.#screenCtx;
-    const imageData = this.#getImageData(this.#state);
+    const imageData = this.#getImageData(this.state);
     ctx.clearRect(0, 0, this.#screenWidth, this.#screenHeight);
-    ctx.putImageData(imageData, this.#offset, 0);
+    ctx.putImageData(imageData, this.offset, 0);
     const pixelData = convertImageDataToPixelData(
       ctx.getImageData(0, 0, this.#screenWidth, this.#screenHeight)
     );
@@ -133,7 +153,7 @@ export class NpPetElement extends BaseElement {
   }
 
   #updateFavicon() {
-    const pixelColors = this.#getPixelData(this.#state);
+    const pixelColors = this.#getPixelData(this.state);
     const favicon = this.#getOrCreateFavicon();
     const ctx = this.#faviconCtx;
     const { canvas } = ctx;

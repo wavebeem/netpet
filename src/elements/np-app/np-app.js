@@ -2,7 +2,7 @@ import { BaseElement, html } from "../base-element.js";
 import "../np-pet/np-pet.js";
 
 export class NpAppElement extends BaseElement {
-  connectedCallback() {
+  onConnect() {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-app.css")}" />
       <div class="frame">
@@ -10,8 +10,33 @@ export class NpAppElement extends BaseElement {
         <div class="screen">
           <np-pet></np-pet>
         </div>
+        <div class="controls">
+          <button class="button" data-action="feed">feed</button>
+          <button class="button" data-action="clean">clean</button>
+          <button class="button" data-action="options">options</button>
+        </div>
       </div>
     `;
+    this.shadowRoot.addEventListener("click", this);
+  }
+
+  onDisconnect() {
+    this.shadowRoot.removeEventListener("click", this);
+  }
+
+  handleEvent(event) {
+    const { action } = event.target.dataset;
+    if (action === "feed") {
+      this.#pet.offset--;
+    } else if (action === "clean") {
+      this.#pet.offset++;
+    } else if (action === "options") {
+      this.#pet.offset = 0;
+    }
+  }
+
+  get #pet() {
+    return this.shadowRoot.querySelector("np-pet");
   }
 }
 

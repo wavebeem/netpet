@@ -1,10 +1,40 @@
 :host {
   display: block;
-  --pixel-size: 16px;
+  --pixel-size: 6px;
   --pixel-gap: 1px;
   --pixel-color0: hsl(74 32% 10% / 3%);
   --pixel-color1: hsl(74 32% 10% / 70%);
   --pixel-color1-shadow: hsl(74 32% 10% / 20%);
+}
+
+@media (min-width: 400px) {
+  :host {
+    --pixel-size: 8px;
+  }
+}
+
+@media (min-width: 500px) {
+  :host {
+    --pixel-size: 10px;
+  }
+}
+
+@media (min-width: 600px) {
+  :host {
+    --pixel-size: 12px;
+  }
+}
+
+@media (min-width: 700px) {
+  :host {
+    --pixel-size: 14px;
+  }
+}
+
+@media (min-width: 800px) {
+  :host {
+    --pixel-size: 16px;
+  }
 }
 
 .pixel-grid {

@@ -6,14 +6,21 @@
   --screen-color-bg0: oklch(96% 10% 120);
   --screen-color-bg1: oklch(98% 10% 80);
   --screen-stripe-size: 32px;
+  --font-cool: "Whisper", sans-serif;
 }
 
 .heading {
   line-height: 1;
   margin: 0;
   margin-bottom: 1rem;
-  font-family: "Whisper", sans-serif;
+  font-family: var(--font-cool);
   text-align: center;
+}
+
+.controls {
+  margin-top: 8px;
+  line-height: 1;
+  font-family: var(--font-cool);
 }
 
 .frame {
@@ -27,7 +34,7 @@
     var(--frame-color-bg0);
   color: var(--frame-color-fg);
   box-shadow: inset 0 0 2px 1px hsl(0 0% 100% / 20%);
-  padding: 32px;
+  padding: 16px;
 }
 
 .screen {

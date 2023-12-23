@@ -62,3 +62,9 @@ export function createCanvasContext({ width, height }) {
   canvas.height = height;
   return canvas.getContext("2d");
 }
+
+export function attrToProp(attr) {
+  return attr
+    .replace(/^data-/, "")
+    .replace(/-([a-z])/g, (_, s) => s.toUpperCase());
+}
