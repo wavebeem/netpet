@@ -2,7 +2,7 @@
   display: block;
   --pixel-size: 6px;
   --pixel-gap: 1px;
-  --pixel-color0: hsl(74 32% 10% / 3%);
+  --pixel-color0: hsl(74 32% 10% / 5%);
   --pixel-color1: hsl(74 32% 10% / 70%);
   --pixel-color1-shadow: hsl(74 32% 10% / 20%);
 }
