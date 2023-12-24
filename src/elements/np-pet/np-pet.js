@@ -10,7 +10,6 @@ import {
 
 export class NpPetElement extends BaseElement {
   #happiness = 3;
-  #volume = 0;
   #state = "loading";
   #screenWidth = 32;
   #screenHeight = 16;
@@ -18,11 +17,23 @@ export class NpPetElement extends BaseElement {
   #offset = this.#screenWidth / 2 - this.#petSize / 2;
   #imageDatas = new Map();
   #pixelDatas = new Map();
-  #favicon;
-  #faviconColors = [
-    [128, 128, 128, 0],
-    [128, 128, 128, 255],
-  ];
+  #theme = "light";
+  #favicon = "default";
+  #faviconElement;
+  #faviconColors = {
+    default: [
+      [128, 128, 128, 32],
+      [128, 128, 128, 255],
+    ],
+    white: [
+      [255, 255, 255, 32],
+      [255, 255, 255, 255],
+    ],
+    black: [
+      [0, 0, 0, 32],
+      [0, 0, 0, 255],
+    ],
+  };
   #screenCtx = createCanvasContext({
     width: this.#screenWidth,
     height: this.#screenHeight,
@@ -50,23 +61,27 @@ export class NpPetElement extends BaseElement {
     this.render();
   }
 
-  get volume() {
-    return this.#volume;
+  get favicon() {
+    return this.#favicon;
   }
 
-  set volume(value) {
-    this.#volume = value;
+  set favicon(value) {
+    this.#favicon = value;
+    this.render();
+  }
+
+  get theme() {
+    return this.#theme;
+  }
+
+  set theme(value) {
+    this.#theme = value;
     this.render();
   }
 
   onConnect() {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-pet.css")}" />
-      <div class="happiness">
-        ${range(5)
-          .map(() => html`<div data-color="0">&hearts;</div>`)
-          .join("")}
-      </div>
       <div class="pixel-grid">
         ${range(this.#screenHeight)
           .map((y) => {
@@ -83,11 +98,6 @@ export class NpPetElement extends BaseElement {
           })
           .join("")}
       </div>
-      <div class="volume">
-        ${range(3)
-          .map(() => html`<div data-color="0">&sung;</div>`)
-          .join("")}
-      </div>
     `;
     const grid = this.#pixelGrid;
     grid.style.setProperty("--screen-width", String(this.#screenWidth));
@@ -100,8 +110,6 @@ export class NpPetElement extends BaseElement {
       return;
     }
     this.#updatePixels();
-    this.#updateHappiness();
-    this.#updateVolume();
     this.#updateFavicon();
   }
 
@@ -156,24 +164,10 @@ export class NpPetElement extends BaseElement {
     }
   }
 
-  #updateHappiness() {
-    const hearts = this.shadowRoot.querySelectorAll(".happiness > *");
-    for (const [i, heart] of hearts.entries()) {
-      heart.dataset.color = i < this.#happiness ? "1" : "0";
-    }
-  }
-
-  #updateVolume() {
-    const notes = this.shadowRoot.querySelectorAll(".volume > *");
-    for (const [i, note] of notes.entries()) {
-      note.dataset.color = i < this.#volume ? "1" : "0";
-    }
-  }
-
   #getOrCreateFavicon() {
-    this.#favicon ||= document.querySelector("#np-pet-favicon");
-    this.#favicon ||= this.#createFavicon();
-    return this.#favicon;
+    this.#faviconElement ||= document.querySelector("#np-pet-favicon");
+    this.#faviconElement ||= this.#createFavicon();
+    return this.#faviconElement;
   }
 
   #createFavicon() {
@@ -195,7 +189,8 @@ export class NpPetElement extends BaseElement {
     const imageData = ctx.createImageData(width, height);
     for (let i = 0; i < pixelColors.length; i++) {
       const color = pixelColors[i];
-      const [r, g, b, a] = this.#faviconColors[color];
+      const palette = this.#faviconColors[this.#favicon];
+      const [r, g, b, a] = palette[color];
       const j = i * 4;
       imageData.data[j + 0] = r;
       imageData.data[j + 1] = g;

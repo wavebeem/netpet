@@ -1,11 +1,10 @@
 import { BaseElement, html } from "../base-element.js";
 import "../np-pet/np-pet.js";
 import "../np-menu/np-menu.js";
-import { playSound } from "../../util.js";
 
 export class NpAppElement extends BaseElement {
-  #volume = 0;
-  #sounds = new Map();
+  #theme = localStorage.getItem("theme") || "light";
+  #favicon = localStorage.getItem("favicon") || "default";
 
   onConnect() {
     this.shadowRoot.innerHTML = html`
@@ -17,7 +16,6 @@ export class NpAppElement extends BaseElement {
         </div>
         <div class="controls">
           <button class="button" data-action="play">play</button>
-          <button class="button" data-action="sound">sound</button>
           <button class="button" data-action="sleep">sleep</button>
           <button class="button" data-action="menu">menu</button>
         </div>
@@ -26,7 +24,7 @@ export class NpAppElement extends BaseElement {
     `;
     this.shadowRoot.addEventListener("click", this);
     this.shadowRoot.addEventListener("np-menu-option-change", this);
-    this.#load();
+    this.#syncOptions();
   }
 
   onDisconnect() {
@@ -44,66 +42,52 @@ export class NpAppElement extends BaseElement {
     }
   }
 
+  get theme() {
+    return this.#theme;
+  }
+
+  set theme(value) {
+    this.#theme = value;
+    this.#pet.theme = value;
+    this.#menu.theme = value;
+    localStorage.setItem("theme", value);
+  }
+
+  get favicon() {
+    return this.#favicon;
+  }
+
+  set favicon(value) {
+    this.#favicon = value;
+    this.#pet.favicon = value;
+    this.#menu.favicon = value;
+    localStorage.setItem("favicon", value);
+  }
+
+  #syncOptions() {
+    this.#pet.theme = this.theme;
+    this.#pet.favicon = this.favicon;
+    this.#menu.theme = this.theme;
+    this.#menu.favicon = this.favicon;
+  }
+
   #handleClick(action) {
     if (action === "play") {
       this.#pet.offset--;
-    } else if (action === "sound") {
-      this.#adjustVolume();
     } else if (action === "menu") {
-      this.#settings.show();
+      this.#menu.show();
     }
   }
 
   #handleOptionChange({ name, value }) {
-    console.log("Got option change:", name, value);
-  }
-
-  #adjustVolume() {
-    this.#volume = (this.#volume + 1) % 4;
-    this.#pet.volume = this.#volume;
-    this.#playSound("boop");
-  }
-
-  async #playSound(name) {
-    await playSound(this.#getSound(name), this.#realVolume);
-  }
-
-  get #realVolume() {
-    return 0.05 * this.#volume;
-  }
-
-  #getSound(name) {
-    const audio = this.#sounds.get(name);
-    if (!audio) {
-      throw new Error(`No sound: ${name}`);
-    }
-    return audio;
-  }
-
-  async #load() {
-    const sounds = ["alert", "boop", "happy"];
-    await Promise.all(sounds.map((name) => this.#loadSound(name)));
-  }
-
-  async #loadSound(name) {
-    return new Promise((resolve, reject) => {
-      const url = import.meta.resolve(`./sounds/${name}.wav`);
-      const audio = new Audio(url);
-      audio.oncanplaythrough = () => {
-        resolve(audio);
-      };
-      audio.onerror = () => {
-        reject(new Error(`Failed to load sound: ${name}`));
-      };
-      this.#sounds.set(name, new Audio(url));
-    });
+    this[name] = value;
   }
 
   get #pet() {
     return this.shadowRoot.querySelector("np-pet");
   }
 
-  get #settings() {
+  get #menu() {
     return this.shadowRoot.querySelector("np-menu");
   }
 }

@@ -1,6 +1,9 @@
 import { BaseElement, html } from "../base-element.js";
 
 export class NpMenuElement extends BaseElement {
+  #favicon;
+  #theme;
+
   onConnect() {
     this.shadowRoot.innerHTML = html`
       <link
@@ -8,7 +11,7 @@ export class NpMenuElement extends BaseElement {
         href="${import.meta.resolve("../../lib/2bit-ui.css")}"
       />
       <link rel="stylesheet" href="${import.meta.resolve("./np-menu.css")}" />
-      <dialog class="bit-root">
+      <dialog class="bit-root bit-scrollbar">
         <form method="dialog">
           <h2>menu</h2>
           <label class="flex-column">
@@ -28,7 +31,7 @@ export class NpMenuElement extends BaseElement {
             </select>
           </label>
           <p>
-            whisper, fantasma fonts<br />&copy;
+            whisper &amp; fantasma fonts<br />&copy;
             <a
               class="bit-link"
               target="_blank"
@@ -59,6 +62,37 @@ export class NpMenuElement extends BaseElement {
 
   onDisconnect() {
     this.shadowRoot.removeEventListener("change", this);
+  }
+
+  render() {
+    this.#optionTheme.value = this.#theme;
+    this.#optionFavicon.value = this.#favicon;
+  }
+
+  get #optionFavicon() {
+    return this.#dialog.querySelector("[name=favicon]");
+  }
+
+  get #optionTheme() {
+    return this.#dialog.querySelector("[name=theme]");
+  }
+
+  get favicon() {
+    return this.#favicon;
+  }
+
+  set favicon(value) {
+    this.#favicon = value;
+    this.render();
+  }
+
+  get theme() {
+    return this.#theme;
+  }
+
+  set theme(value) {
+    this.#theme = value;
+    this.render();
   }
 
   handleEvent(event) {

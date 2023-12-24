@@ -5,7 +5,6 @@
   --pixel-color0: hsl(0 0% 0% / 5%);
   --pixel-color1: hsl(0 0% 0% / 60%);
   --pixel-color1-shadow: hsl(0 0% 0% / 20%);
-
   display: grid;
   gap: 16px;
   font-size: var(--font-size);
@@ -53,11 +52,16 @@
   }
 }
 
-.volume,
-.happiness {
+.meter {
   letter-spacing: 0.125em;
   line-height: 1;
   display: flex;
+  gap: 0.125em;
+}
+
+.meter-label {
+  flex: auto;
+  margin-right: 1em;
 }
 
 [data-color="0"] {
@@ -86,4 +90,17 @@
   background: var(--pixel-color1);
   box-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
     calc(var(--pixel-size) / 2) var(--pixel-color1-shadow);
+}
+
+svg {
+  width: 1em;
+  height: auto;
+}
+
+[data-color="1"] > svg {
+  fill: var(--pixel-color1);
+  filter: drop-shadow(
+    calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
+      calc(var(--pixel-size) / 2) var(--pixel-color1-shadow)
+  );
 }
