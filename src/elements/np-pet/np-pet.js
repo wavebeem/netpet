@@ -33,10 +33,6 @@ export class NpPetElement extends BaseElement {
       [0, 0, 0, 32],
       [0, 0, 0, 255],
     ],
-    green: [
-      [0, 255, 0, 32],
-      [0, 255, 0, 255],
-    ],
   };
   #screenCtx = createCanvasContext({
     width: this.#screenWidth,
@@ -53,6 +49,7 @@ export class NpPetElement extends BaseElement {
 
   set state(value) {
     this.#state = value;
+    this.dataset.state = value;
     this.render();
   }
 
@@ -62,6 +59,7 @@ export class NpPetElement extends BaseElement {
 
   set happiness(value) {
     this.#happiness = value;
+    this.dataset.happiness = value;
     this.render();
   }
 
@@ -71,6 +69,7 @@ export class NpPetElement extends BaseElement {
 
   set favicon(value) {
     this.#favicon = value;
+    this.dataset.favicon = value;
     this.render();
   }
 
@@ -80,6 +79,7 @@ export class NpPetElement extends BaseElement {
 
   set theme(value) {
     this.#theme = value;
+    this.dataset.theme = value;
     this.render();
   }
 
@@ -113,6 +113,8 @@ export class NpPetElement extends BaseElement {
     if (this.state === "loading") {
       return;
     }
+    this.dataset.theme = this.theme;
+    this.dataset.favicon = this.favicon;
     this.#updatePixels();
     this.#updateFavicon();
   }

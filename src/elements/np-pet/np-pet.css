@@ -2,15 +2,23 @@
   --font-size: 24px;
   --pixel-size: 6px;
   --pixel-gap: 1px;
-  --pixel-color0: hsl(0 0% 0% / 5%);
-  --pixel-color1: hsl(0 0% 0% / 60%);
-  --pixel-color1-shadow: hsl(0 0% 0% / 20%);
   display: grid;
   gap: 16px;
   font-size: var(--font-size);
   color: var(--pixel-color1);
-  text-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
-    calc(var(--pixel-size) / 2) var(--pixel-color1-shadow);
+}
+
+:host([data-theme="light"]) {
+  --pixel-color0: hsl(0 0% 0% / 5%);
+  --pixel-color1: hsl(0 0% 0% / 60%);
+  --pixel-color1-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
+    calc(var(--pixel-size) / 2) hsl(0 0% 0% / 20%);
+}
+
+:host([data-theme="dark"]) {
+  --pixel-color0: transparent;
+  --pixel-color1: hsl(180 100% 100%);
+  --pixel-color1-shadow: 0 0 calc(var(--pixel-size) / 2) hsl(180 100% 100%);
 }
 
 :host([hidden]) {
@@ -65,7 +73,7 @@
 }
 
 [data-color="0"] {
-  color: hsl(0 0% 0% / 5%);
+  color: var(--pixel-color0);
   text-shadow: none;
 }
 
@@ -88,19 +96,5 @@
 
 .pixel[data-color="1"] {
   background: var(--pixel-color1);
-  box-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
-    calc(var(--pixel-size) / 2) var(--pixel-color1-shadow);
-}
-
-svg {
-  width: 1em;
-  height: auto;
-}
-
-[data-color="1"] > svg {
-  fill: var(--pixel-color1);
-  filter: drop-shadow(
-    calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
-      calc(var(--pixel-size) / 2) var(--pixel-color1-shadow)
-  );
+  box-shadow: var(--pixel-color1-shadow);
 }

@@ -15,9 +15,9 @@ export class NpAppElement extends BaseElement {
           <np-pet></np-pet>
         </div>
         <div class="controls">
-          <button class="button" data-action="play">play</button>
-          <button class="button" data-action="sleep">sleep</button>
           <button class="button" data-action="menu">menu</button>
+          <button class="button" data-action="sleep">sleep</button>
+          <button class="button" data-action="play">play</button>
         </div>
       </div>
       <np-menu></np-menu>
@@ -50,6 +50,7 @@ export class NpAppElement extends BaseElement {
     this.#theme = value;
     this.#pet.theme = value;
     this.#menu.theme = value;
+    this.dataset.theme = this.theme;
     localStorage.setItem("theme", value);
   }
 
@@ -65,6 +66,7 @@ export class NpAppElement extends BaseElement {
   }
 
   #syncOptions() {
+    this.dataset.theme = this.theme;
     this.#pet.theme = this.theme;
     this.#pet.favicon = this.favicon;
     this.#menu.theme = this.theme;

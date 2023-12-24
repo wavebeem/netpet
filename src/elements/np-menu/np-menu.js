@@ -27,7 +27,6 @@ export class NpMenuElement extends BaseElement {
               <option value="default">default</option>
               <option value="white">white</option>
               <option value="black">black</option>
-              <option value="green">green</option>
             </select>
           </label>
           <p>
