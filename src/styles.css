@@ -1,6 +1,22 @@
+@font-face {
+  font-display: swap;
+  font-family: "Whisper";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/whisper.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Fantasma";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/fantasma.woff2") format("woff2");
+}
+
 :root {
-  --font-cool0: "Whisper", sans-serif;
-  --font-cool1: "Fantasma", sans-serif;
+  --font-cool0: "Whisper", system-ui, sans-serif;
+  --font-cool1: "Fantasma", system-ui, sans-serif;
 }
 
 html,
