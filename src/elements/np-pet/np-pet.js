@@ -33,6 +33,10 @@ export class NpPetElement extends BaseElement {
       [0, 0, 0, 32],
       [0, 0, 0, 255],
     ],
+    green: [
+      [0, 255, 0, 32],
+      [0, 255, 0, 255],
+    ],
   };
   #screenCtx = createCanvasContext({
     width: this.#screenWidth,
