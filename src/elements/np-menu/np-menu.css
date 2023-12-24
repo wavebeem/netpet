@@ -2,6 +2,14 @@
   display: contents;
 }
 
+:host([data-theme="light"]) {
+  --dialog-color-border: hsl(0 0% 0% / 50%);
+}
+
+:host([data-theme="dark"]) {
+  --dialog-color-border: hsl(0 0% 100% / 50%);
+}
+
 ::backdrop {
   background: hsl(0 0% 15% / 80%);
   backdrop-filter: blur(4px);
@@ -16,7 +24,7 @@ dialog {
   min-width: calc(50svw - 32px);
   border-radius: var(--bit-border-radius);
   border: 0;
-  box-shadow: 0 0 0 1px hsl(0 0% 0% / 50%), 0 2px 4px hsl(0 0% 0% / 20%),
+  box-shadow: 0 0 0 1px var(--dialog-color-border), 0 2px 4px hsl(0 0% 0% / 20%),
     0 4px 8px hsl(0 0% 0% / 20%);
 }
 
@@ -32,14 +40,14 @@ dialog p {
 }
 
 .bit-root {
-  --bit-border-radius: 6px;
+  --bit-border-radius: 4px;
 }
 
 :host([data-theme="light"]) .bit-root {
-  --bit-color-bg: hsl(200 100% 95%);
-  --bit-color-fg: hsl(200 100% 25%);
-  --bit-color-shadow: hsl(200 75% 75%);
-  --bit-color-accent: hsl(0 100% 25%);
+  --bit-color-bg: hsl(0 100% 98%);
+  --bit-color-fg: hsl(0 100% 25%);
+  --bit-color-shadow: hsl(0 75% 75%);
+  --bit-color-accent: hsl(200 100% 25%);
 }
 
 :host([data-theme="dark"]) .bit-root {
