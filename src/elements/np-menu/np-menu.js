@@ -30,6 +30,12 @@ export class NpMenuElement extends BaseElement {
             </select>
           </label>
           <p>
+            code &amp; images<br />&copy;
+            <a class="bit-link" target="_blank" href="https://www.wavebeem.com"
+              >sage fennel</a
+            >
+          </p>
+          <p>
             whisper &amp; fantasma fonts<br />&copy;
             <a
               class="bit-link"
@@ -42,12 +48,6 @@ export class NpMenuElement extends BaseElement {
             background textures<br />&copy;
             <a class="bit-link" target="_blank" href="https://css-pattern.com/"
               >temani afif</a
-            >
-          </p>
-          <p>
-            code &amp; images<br />&copy;
-            <a class="bit-link" target="_blank" href="https://www.wavebeem.com"
-              >sage fennel</a
             >
           </p>
           <div class="flex-right">
@@ -64,6 +64,8 @@ export class NpMenuElement extends BaseElement {
   }
 
   render() {
+    this.dataset.theme = this.#theme;
+    this.dataset.favicon = this.#favicon;
     this.#optionTheme.value = this.#theme;
     this.#optionFavicon.value = this.#favicon;
   }

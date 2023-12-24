@@ -17,10 +17,3 @@ body {
   line-height: 1.5;
   font-size: 24px;
 }
-
-:root,
-.bit-root,
-.bit-auto {
-  --bit-color0: hsl(200 100% 15%);
-  --bit-color1: hsl(200 100% 95%);
-}
