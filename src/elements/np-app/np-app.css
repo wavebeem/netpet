@@ -1,7 +1,7 @@
 :host {
   display: grid;
   --frame-color-bg0: hsl(260 70% 55%);
-  --frame-color-bg1: hsl(260 70% 50%);
+  --frame-color-bg1: hsl(260 70% 40%);
   --frame-color-fg: hsl(0 0% 100%);
   --button-color-fg: hsl(50 90% 20%);
   --button-color-bg0: hsl(50 100% 60%);
