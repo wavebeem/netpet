@@ -6,17 +6,34 @@ export function zip(a, b) {
   return a.map((x, i) => [x, b[i]]);
 }
 
+export function randomBoolean() {
+  return Math.random() < 0.5;
+}
+
+function* usingAbortSignal() {
+  const abortController = new AbortController();
+  try {
+    yield abortController.signal;
+  } finally {
+    abortController.abort();
+  }
+}
+
 export async function loadUrlAsElement(url) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => {
-      resolve(image);
-    };
-    image.onerror = () => {
-      reject(new Error(`Failed to load image: ${url}`));
-    };
-    image.src = url;
-  });
+  for (const signal of usingAbortSignal()) {
+    return await new Promise((resolve, reject) => {
+      const image = new Image();
+      function onLoad() {
+        resolve(image);
+      }
+      function onError() {
+        reject(new Error(`Failed to load image: ${url}`));
+      }
+      image.addEventListener("load", onLoad, { signal });
+      image.addEventListener("error", onError, { signal });
+      image.src = url;
+    });
+  }
 }
 
 const canvas = document.createElement("canvas");

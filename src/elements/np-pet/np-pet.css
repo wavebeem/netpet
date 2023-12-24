@@ -11,8 +11,8 @@
 :host([data-theme="light"]) {
   --pixel-color0: hsl(0 0% 0% / 5%);
   --pixel-color1: hsl(0 0% 0% / 60%);
-  --pixel-color1-shadow: calc(var(--pixel-size) / 4) calc(var(--pixel-size) / 4)
-    calc(var(--pixel-size) / 2) hsl(0 0% 0% / 20%);
+  --pixel-color1-shadow: calc(var(--pixel-size) / 8) calc(var(--pixel-size) / 8)
+    calc(var(--pixel-size) / 8) hsl(0 0% 0% / 20%);
 }
 
 :host([data-theme="dark"]) {
@@ -87,7 +87,6 @@
 .pixel {
   width: var(--pixel-size);
   height: var(--pixel-size);
-  background: var(--pixel-color);
 }
 
 .pixel[data-color="0"] {

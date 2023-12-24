@@ -22,6 +22,7 @@
 dialog {
   max-height: calc(100svh - 32px);
   min-width: calc(50svw - 32px);
+  width: 500px;
   border-radius: var(--bit-border-radius);
   border: 0;
   box-shadow: 0 0 0 1px var(--dialog-color-border), 0 2px 4px hsl(0 0% 0% / 20%),

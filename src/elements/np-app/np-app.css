@@ -54,15 +54,11 @@
 
 .screen {
   margin: auto;
-  width: max-content;
-  height: max-content;
-  size: 80px;
-  overflow-y: auto;
-  flex: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  aspect-ratio: 1 / 1;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 0 0 1px hsl(0 0% 0% / 40%), 0 0 2px 2px hsl(0 0% 100% / 20%),

@@ -74,8 +74,8 @@ export class NpAppElement extends BaseElement {
   }
 
   #handleClick(action) {
-    if (action === "play") {
-      this.#pet.offset--;
+    if (action === "play" || action === "sleep") {
+      this.#pet.interact(action);
     } else if (action === "menu") {
       this.#menu.show();
     }

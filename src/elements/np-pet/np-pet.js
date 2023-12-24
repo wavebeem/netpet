@@ -6,15 +6,20 @@ import {
   loadUrlAsElement,
   convertImageToImageData,
   convertImageDataToPixelData,
+  randomBoolean,
 } from "../../util.js";
 
 export class NpPetElement extends BaseElement {
-  #happiness = 3;
+  #framesSinceIdle = 0;
+  #tickRate = 1000;
+  #frame = 0;
+  #states = ["idle", "happy", "sleep"];
   #state = "loading";
   #screenWidth = 32;
   #screenHeight = 16;
   #petSize = 16;
   #offset = this.#screenWidth / 2 - this.#petSize / 2;
+  #offsetMax = this.#screenWidth - this.#petSize;
   #imageDatas = new Map();
   #pixelDatas = new Map();
   #theme = "light";
@@ -22,15 +27,15 @@ export class NpPetElement extends BaseElement {
   #faviconElement;
   #faviconColors = {
     default: [
-      [128, 128, 128, 32],
+      [0, 0, 0, 0],
       [128, 128, 128, 255],
     ],
     white: [
-      [255, 255, 255, 32],
+      [0, 0, 0, 0],
       [255, 255, 255, 255],
     ],
     black: [
-      [0, 0, 0, 32],
+      [0, 0, 0, 0],
       [0, 0, 0, 255],
     ],
   };
@@ -43,23 +48,46 @@ export class NpPetElement extends BaseElement {
     height: this.#petSize,
   });
 
+  #onTick = () => {
+    this.#frame = (this.#frame + 1) % 2;
+    if (this.state === "idle") {
+      this.#framesSinceIdle = 0;
+      const willMove = randomBoolean();
+      if (willMove) {
+        const quarter = this.#offsetMax / 4;
+        let direction = 0;
+        if (this.#offset < quarter) {
+          direction = 1;
+        } else if (this.#offset > 3 * quarter) {
+          direction = -1;
+        } else {
+          direction = randomBoolean() ? 1 : -1;
+        }
+        this.#offset += direction;
+      }
+    } else if (this.state === "happy") {
+      this.#framesSinceIdle++;
+      if (this.#framesSinceIdle > 4) {
+        this.state = "idle";
+      }
+    } else if (this.state === "sleep") {
+    }
+    this.render();
+    if (this.isConnected) {
+      setTimeout(this.#onTick, this.#tickRate);
+    }
+  };
+
   get state() {
     return this.#state;
   }
 
   set state(value) {
+    if (value === "idle") {
+      this.#framesSinceIdle = 0;
+    }
     this.#state = value;
     this.dataset.state = value;
-    this.render();
-  }
-
-  get happiness() {
-    return this.#happiness;
-  }
-
-  set happiness(value) {
-    this.#happiness = value;
-    this.dataset.happiness = value;
     this.render();
   }
 
@@ -81,6 +109,24 @@ export class NpPetElement extends BaseElement {
     this.#theme = value;
     this.dataset.theme = value;
     this.render();
+  }
+
+  interact(action) {
+    if (action === "sleep") {
+      if (this.state === "sleep") {
+        this.state = "idle";
+      } else {
+        this.state = "sleep";
+      }
+    } else if (action === "play") {
+      if (this.state === "sleep") {
+        this.state = "idle";
+      } else {
+        this.state = "happy";
+      }
+    } else {
+      throw new Error(`unknown action: ${action}`);
+    }
   }
 
   onConnect() {
@@ -119,7 +165,7 @@ export class NpPetElement extends BaseElement {
     this.#updateFavicon();
   }
 
-  #urlForState(state) {
+  #urlForFrame(state) {
     return import.meta.resolve(`./img/${state}.png`);
   }
 
@@ -127,16 +173,25 @@ export class NpPetElement extends BaseElement {
     if (this.state !== "loading") {
       return;
     }
-    await this.#loadState("idle");
+    await Promise.all(this.#states.map((state) => this.#loadState(state)));
     this.state = "idle";
+    this.#onTick();
   }
 
   async #loadState(state) {
-    const image = await loadUrlAsElement(this.#urlForState(state));
+    await Promise.all(
+      range(2).map((frame) => {
+        return this.#loadFrame(this.#getFrameFileName(state, frame));
+      })
+    );
+  }
+
+  async #loadFrame(frame) {
+    const image = await loadUrlAsElement(this.#urlForFrame(frame));
     const imageData = convertImageToImageData(image);
     const pixelData = convertImageDataToPixelData(imageData);
-    this.#pixelDatas.set(state, pixelData);
-    this.#imageDatas.set(state, imageData);
+    this.#pixelDatas.set(frame, pixelData);
+    this.#imageDatas.set(frame, imageData);
   }
 
   #getPixelData(state) {
@@ -157,9 +212,16 @@ export class NpPetElement extends BaseElement {
     return [...this.shadowRoot.querySelectorAll(".pixel")];
   }
 
+  #getFrameFileName(state, frame) {
+    const suffix = String(frame + 1).padStart(2, "0");
+    return `${state}${suffix}`;
+  }
+
   #updatePixels() {
     const ctx = this.#screenCtx;
-    const imageData = this.#getImageData(this.state);
+    const imageData = this.#getImageData(
+      this.#getFrameFileName(this.state, this.#frame)
+    );
     ctx.clearRect(0, 0, this.#screenWidth, this.#screenHeight);
     ctx.putImageData(imageData, this.#offset, 0);
     const pixelData = convertImageDataToPixelData(
@@ -186,7 +248,9 @@ export class NpPetElement extends BaseElement {
   }
 
   #updateFavicon() {
-    const pixelColors = this.#getPixelData(this.state);
+    const pixelColors = this.#getPixelData(
+      this.#getFrameFileName(this.state, this.#frame)
+    );
     const favicon = this.#getOrCreateFavicon();
     const ctx = this.#faviconCtx;
     const { canvas } = ctx;
