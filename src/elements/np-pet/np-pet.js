@@ -233,8 +233,9 @@ export class NpPetElement extends BaseElement {
   }
 
   #getOrCreateFavicon() {
-    this.#faviconElement ||= document.querySelector("#np-pet-favicon");
-    this.#faviconElement ||= this.#createFavicon();
+    this.#faviconElement ||=
+      document.querySelector("link[rel='icon'][sizes='16x16']") ||
+      this.#createFavicon();
     return this.#faviconElement;
   }
 
@@ -242,7 +243,6 @@ export class NpPetElement extends BaseElement {
     const favicon = document.createElement("link");
     favicon.rel = "icon";
     favicon.sizes = "16x16";
-    favicon.id = "np-pet-favicon";
     document.head.append(favicon);
     return favicon;
   }
