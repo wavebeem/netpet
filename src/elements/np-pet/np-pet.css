@@ -25,35 +25,35 @@
   display: none;
 }
 
-@media (min-width: 400px) {
+@media (min-width: 400px) and (min-height: 500px) {
   :host {
     --font-size: 26px;
     --pixel-size: 8px;
   }
 }
 
-@media (min-width: 500px) {
+@media (min-width: 500px) and (min-height: 600px) {
   :host {
     --font-size: 28px;
     --pixel-size: 10px;
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 600px) and (min-height: 700px) {
   :host {
     --font-size: 30px;
     --pixel-size: 12px;
   }
 }
 
-@media (min-width: 700px) {
+@media (min-width: 700px) and (min-height: 800px) {
   :host {
     --font-size: 32px;
     --pixel-size: 14px;
   }
 }
 
-@media (min-width: 800px) {
+@media (min-width: 800px) and (min-height: 900px) {
   :host {
     --font-size: 34px;
     --pixel-size: 16px;
