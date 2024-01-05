@@ -15,9 +15,9 @@ export class BaseElement extends HTMLElement {
       return;
     }
     const options = { signal: this.#abortController.signal };
-    for (const [eventType, selector, method] of this.events || []) {
+    for (const [eventType, selector, method] of this.events) {
       if (!method) {
-        return this.error(`Missing method for ${eventType} @ ${selector}`);
+        return this.error(`missing method for ${eventType} @ ${selector}`);
       }
       this.shadowRoot.addEventListener(eventType, this, options);
     }
@@ -35,7 +35,7 @@ export class BaseElement extends HTMLElement {
   $(selector) {
     const element = this.shadowRoot.querySelector(selector);
     if (!element) {
-      return this.error(`Element not found: ${selector}`);
+      return this.error(`element not found: ${selector}`);
     }
     return element;
   }
