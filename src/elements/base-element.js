@@ -1,4 +1,4 @@
-import { attrToProp } from "../util.js";
+// import { attrToProp } from "../util.js";
 
 export class BaseElement extends HTMLElement {
   constructor() {
@@ -153,29 +153,42 @@ export class BaseElement extends HTMLElement {
   // }
 }
 
-export const html = String.raw;
+function safeHtml(value) {
+  if (Array.isArray(value)) {
+    return value.map(safeHtml).join("");
+  }
+  if (value instanceof html.SafeString) {
+    return value.toString();
+  }
+  if (typeof value === "number" || typeof value === "string") {
+    return html.escape(value);
+  }
+  throw new Error(`Invalid value: ${value}`);
+}
 
-// export function html(strings, ...values) {
-//   // const safeValues = values;
-//   // return String.raw({ raw: strings }, ...safeValues);
-//   const safeValues = values.flat().map((v) => {
-//     console.log("HTML?", v);
-//     if (v instanceof html.SafeString) {
-//       return v.toString();
-//     }
-//     return html.escape(v);
-//   });
-//   return new html.SafeString(String.raw({ raw: strings }, ...safeValues));
-// }
+export function html(strings, ...values) {
+  const s = String.raw({ raw: strings }, ...values.map(safeHtml));
+  return new html.SafeString(s);
+}
 
-// const escapeElement = document.createElement("div");
+const escapeElement = document.createElement("div");
 
-// html.escape = function escape(value) {
-//   escapeElement.textContent = value;
-//   return escapeElement.innerHTML;
-// };
+html.escape = function escape(value) {
+  escapeElement.textContent = value;
+  return escapeElement.innerHTML
+    .replaceAll("'", "&apos;")
+    .replaceAll('"', "&quot;");
+};
 
-// html.SafeString = class SafeString extends String {
-//   BLAH = "safestring";
-//   [Symbol.toStringTag] = "SafeString";
-// };
+html.SafeString = class SafeString {
+  [Symbol.toStringTag] = "html.SafeString";
+  value;
+
+  constructor(value) {
+    this.value = value;
+  }
+
+  toString() {
+    return this.value;
+  }
+};

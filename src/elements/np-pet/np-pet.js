@@ -139,20 +139,16 @@ export class NpPetElement extends BaseElement {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-pet.css")}" />
       <div class="pixel-grid">
-        ${range(this.#screenHeight)
-          .map((y) => {
-            return range(this.#screenWidth)
-              .map((x) => {
-                return html`<div
-                  class="pixel"
-                  data-color="0"
-                  data-x="${x}"
-                  data-y="${y}"
-                ></div>`;
-              })
-              .join("");
-          })
-          .join("")}
+        ${range(this.#screenHeight).flatMap((y) => {
+          return range(this.#screenWidth).map((x) => {
+            return html`<div
+              class="pixel"
+              data-color="0"
+              data-x="${x}"
+              data-y="${y}"
+            ></div>`;
+          });
+        })}
       </div>
     `;
     const grid = this.#$pixelGrid;
