@@ -22,7 +22,7 @@ function* usingAbortSignal() {
 export async function loadUrlAsElement(url) {
   for (const signal of usingAbortSignal()) {
     return await new Promise((resolve, reject) => {
-      const image = new Image();
+      const image = document.createElement("img");
       function onLoad() {
         resolve(image);
       }
@@ -78,10 +78,4 @@ export function createCanvasContext({ width, height }) {
   canvas.width = width;
   canvas.height = height;
   return canvas.getContext("2d");
-}
-
-export function attrToProp(attr) {
-  return attr
-    .replace(/^data-/, "")
-    .replace(/-([a-z])/g, (_, s) => s.toUpperCase());
 }

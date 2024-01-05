@@ -1,4 +1,4 @@
-import { BaseElement, html } from "../base-element.js";
+import { BaseElement, html } from "../framework.js";
 import {
   range,
   zip,
