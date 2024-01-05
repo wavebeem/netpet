@@ -20,8 +20,8 @@ export class NpPetElement extends BaseElement {
   #petSize = 16;
   #offset = this.#screenWidth / 2 - this.#petSize / 2;
   #offsetMax = this.#screenWidth - this.#petSize;
-  #imageDatas = new Map();
-  #pixelDatas = new Map();
+  #imageDataMap = new Map();
+  #pixelDataMap = new Map();
   #theme = "light";
   #favicon = "default";
   #faviconElement;
@@ -48,7 +48,7 @@ export class NpPetElement extends BaseElement {
     height: this.#petSize,
   });
 
-  #onTick = () => {
+  #onTick() {
     this.#frame = (this.#frame + 1) % 2;
     if (this.state === "idle") {
       this.#framesSinceIdle = 0;
@@ -74,9 +74,11 @@ export class NpPetElement extends BaseElement {
     }
     this.render();
     if (this.isConnected) {
-      setTimeout(this.#onTick, this.#tickRate);
+      setTimeout(() => {
+        this.#onTick();
+      }, this.#tickRate);
     }
-  };
+  }
 
   get state() {
     return this.#state;
@@ -111,6 +113,10 @@ export class NpPetElement extends BaseElement {
     this.render();
   }
 
+  // I don't love exposing a method as part of the API for interacting with
+  // this, but I'm not sure it really makes more sense to use the DOM event
+  // system just to trigger a state change since the caller would need to ensure
+  // the DOM event was triggered directly on this element anyway.
   interact(action) {
     if (action === "sleep") {
       if (this.state === "sleep") {
@@ -125,7 +131,7 @@ export class NpPetElement extends BaseElement {
         this.state = "happy";
       }
     } else {
-      throw new Error(`unknown action: ${action}`);
+      return this.error(`unknown action: ${action}`);
     }
   }
 
@@ -149,7 +155,7 @@ export class NpPetElement extends BaseElement {
           .join("")}
       </div>
     `;
-    const grid = this.#pixelGrid;
+    const grid = this.#$pixelGrid;
     grid.style.setProperty("--screen-width", String(this.#screenWidth));
     grid.style.setProperty("--screen-height", String(this.#screenHeight));
     this.#load();
@@ -190,26 +196,26 @@ export class NpPetElement extends BaseElement {
     const image = await loadUrlAsElement(this.#urlForFrame(frame));
     const imageData = convertImageToImageData(image);
     const pixelData = convertImageDataToPixelData(imageData);
-    this.#pixelDatas.set(frame, pixelData);
-    this.#imageDatas.set(frame, imageData);
+    this.#pixelDataMap.set(frame, pixelData);
+    this.#imageDataMap.set(frame, imageData);
   }
 
   #getPixelData(state) {
-    if (!this.#pixelDatas.has(state)) {
-      throw new Error(`Unknown state: ${state}`);
+    if (!this.#pixelDataMap.has(state)) {
+      return this.error(`Unknown state: ${state}`);
     }
-    return this.#pixelDatas.get(state);
+    return this.#pixelDataMap.get(state);
   }
 
   #getImageData(state) {
-    if (!this.#imageDatas.has(state)) {
-      throw new Error(`Unknown state: ${state}`);
+    if (!this.#imageDataMap.has(state)) {
+      return this.error(`Unknown state: ${state}`);
     }
-    return this.#imageDatas.get(state);
+    return this.#imageDataMap.get(state);
   }
 
   #pixelElements() {
-    return [...this.shadowRoot.querySelectorAll(".pixel")];
+    return this.$$(".pixel");
   }
 
   #getFrameFileName(state, frame) {
@@ -271,8 +277,8 @@ export class NpPetElement extends BaseElement {
     favicon.href = canvas.toDataURL();
   }
 
-  get #pixelGrid() {
-    return this.shadowRoot.querySelector(".pixel-grid");
+  get #$pixelGrid() {
+    return this.$(".pixel-grid");
   }
 }
 

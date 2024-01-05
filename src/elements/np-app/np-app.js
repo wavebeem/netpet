@@ -6,6 +6,13 @@ export class NpAppElement extends BaseElement {
   #theme = localStorage.getItem("theme") || "light";
   #favicon = localStorage.getItem("favicon") || "default";
 
+  events = [
+    ["click", "[data-action='menu']", this.#onClickMenu],
+    ["click", "[data-action='sleep']", this.#onClickSleep],
+    ["click", "[data-action='play']", this.#onClickPlay],
+    ["np-menu-option-change", "np-menu", this.#onOptionChange],
+  ];
+
   onConnect() {
     this.shadowRoot.innerHTML = html`
       <link rel="stylesheet" href="${import.meta.resolve("./np-app.css")}" />
@@ -15,31 +22,31 @@ export class NpAppElement extends BaseElement {
           <np-pet></np-pet>
         </div>
         <div class="controls">
-          <button class="button" data-action="menu">menu</button>
+          <button class="button" data-action="menu"><div>menu</div></button>
           <button class="button" data-action="sleep">sleep</button>
           <button class="button" data-action="play">play</button>
         </div>
       </div>
       <np-menu></np-menu>
     `;
-    this.shadowRoot.addEventListener("click", this);
-    this.shadowRoot.addEventListener("np-menu-option-change", this);
     this.#syncOptions();
   }
 
-  onDisconnect() {
-    this.shadowRoot.removeEventListener("click", this);
-    this.shadowRoot.removeEventListener("np-menu-option-change", this);
+  #onClickMenu(_event) {
+    this.#$menu.show();
   }
 
-  handleEvent(event) {
-    if (event.type === "click") {
-      const { action } = event.target.dataset;
-      this.#handleClick(action);
-    } else if (event.type === "np-menu-option-change") {
-      const { name, value } = event.detail;
-      this.#handleOptionChange({ name, value });
-    }
+  #onClickSleep(_event) {
+    this.#$pet.interact("sleep");
+  }
+
+  #onClickPlay(_event) {
+    this.#$pet.interact("play");
+  }
+
+  #onOptionChange(event) {
+    const { name, value } = event.detail;
+    this[name] = value;
   }
 
   get theme() {
@@ -48,8 +55,8 @@ export class NpAppElement extends BaseElement {
 
   set theme(value) {
     this.#theme = value;
-    this.#pet.theme = value;
-    this.#menu.theme = value;
+    this.#$pet.theme = value;
+    this.#$menu.theme = value;
     this.dataset.theme = this.theme;
     localStorage.setItem("theme", value);
   }
@@ -60,37 +67,25 @@ export class NpAppElement extends BaseElement {
 
   set favicon(value) {
     this.#favicon = value;
-    this.#pet.favicon = value;
-    this.#menu.favicon = value;
+    this.#$pet.favicon = value;
+    this.#$menu.favicon = value;
     localStorage.setItem("favicon", value);
   }
 
   #syncOptions() {
     this.dataset.theme = this.theme;
-    this.#pet.theme = this.theme;
-    this.#pet.favicon = this.favicon;
-    this.#menu.theme = this.theme;
-    this.#menu.favicon = this.favicon;
+    this.#$pet.theme = this.theme;
+    this.#$pet.favicon = this.favicon;
+    this.#$menu.theme = this.theme;
+    this.#$menu.favicon = this.favicon;
   }
 
-  #handleClick(action) {
-    if (action === "play" || action === "sleep") {
-      this.#pet.interact(action);
-    } else if (action === "menu") {
-      this.#menu.show();
-    }
+  get #$pet() {
+    return this.$("np-pet");
   }
 
-  #handleOptionChange({ name, value }) {
-    this[name] = value;
-  }
-
-  get #pet() {
-    return this.shadowRoot.querySelector("np-pet");
-  }
-
-  get #menu() {
-    return this.shadowRoot.querySelector("np-menu");
+  get #$menu() {
+    return this.$("np-menu");
   }
 }
 

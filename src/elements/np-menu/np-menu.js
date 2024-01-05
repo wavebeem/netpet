@@ -4,6 +4,8 @@ export class NpMenuElement extends BaseElement {
   #favicon;
   #theme;
 
+  events = [["change", "dialog select", this.#onChange]];
+
   onConnect() {
     this.shadowRoot.innerHTML = html`
       <link
@@ -56,26 +58,21 @@ export class NpMenuElement extends BaseElement {
         </form>
       </dialog>
     `;
-    this.shadowRoot.addEventListener("change", this);
-  }
-
-  onDisconnect() {
-    this.shadowRoot.removeEventListener("change", this);
   }
 
   render() {
     this.dataset.theme = this.#theme;
     this.dataset.favicon = this.#favicon;
-    this.#optionTheme.value = this.#theme;
-    this.#optionFavicon.value = this.#favicon;
+    this.#$optionTheme.value = this.#theme;
+    this.#$optionFavicon.value = this.#favicon;
   }
 
-  get #optionFavicon() {
-    return this.#dialog.querySelector("[name=favicon]");
+  get #$optionFavicon() {
+    return this.$("dialog [name=favicon]");
   }
 
-  get #optionTheme() {
-    return this.#dialog.querySelector("[name=theme]");
+  get #$optionTheme() {
+    return this.$("dialog [name=theme]");
   }
 
   get favicon() {
@@ -96,17 +93,17 @@ export class NpMenuElement extends BaseElement {
     this.render();
   }
 
-  handleEvent(event) {
+  #onChange(event) {
     const { name, value } = event.target;
     this.dispatchCustomEvent("np-menu-option-change", { name, value });
   }
 
   show() {
-    this.#dialog.showModal();
+    this.#$dialog.showModal();
   }
 
-  get #dialog() {
-    return this.shadowRoot.querySelector("dialog");
+  get #$dialog() {
+    return this.$("dialog");
   }
 }
 
